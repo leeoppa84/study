@@ -3,21 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Teachable Machine Image Model</title>
+  <meta name="theme-color" content="#f3f1e9">
+  <title>피규어 비전 스튜디오</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #202b2a;
+      --muted: #687472;
+      --paper: #f3f1e9;
+      --panel: #fffefa;
+      --line: #d9ded7;
+      --green: #265e52;
+      --coral: #e8795f;
+      --yellow: #f2c96d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image: radial-gradient(#cfd7ce 0.7px, transparent 0.7px);
+      background-size: 18px 18px;
+      font-family: "Avenir Next", "Malgun Gothic", sans-serif;
+    }
+    button, input { font: inherit; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 22px 28px;
+      border-bottom: 1px solid rgba(32, 43, 42, .16);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; }
+    .brand-mark { display: grid; width: 34px; aspect-ratio: 1; place-items: center; color: white; background: var(--green); border-radius: 10px; }
+    .local-tag { padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255, 254, 250, .72); font-size: 12px; }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(280px, .75fr);
+      gap: 22px;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 42px 28px 56px;
+    }
+    .workspace, .product-panel { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+    .workspace { padding: clamp(22px, 4vw, 42px); }
+    .eyebrow { margin: 0 0 10px; color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    h1, h2, p { margin-top: 0; }
+    h1 { max-width: 600px; margin-bottom: 12px; font-size: clamp(30px, 4vw, 48px); line-height: 1.12; }
+    .intro { max-width: 520px; margin-bottom: 28px; color: var(--muted); line-height: 1.65; }
+    .scanner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(210px, .85fr);
+      min-height: 330px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #e8eee8;
+    }
+    .camera-column { display: flex; flex-direction: column; min-width: 0; padding: 18px; }
+    .section-label { margin-bottom: 12px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    #webcam-container { display: grid; flex: 1; min-height: 224px; place-items: center; overflow: hidden; border-radius: 4px; background: #dce5dc; }
+    #webcam-container canvas { display: block; width: min(100%, 360px); height: auto; }
+    #photo-preview { width: min(100%, 360px); height: auto; border-radius: 4px; }
+    .result-column { padding: 20px; border-left: 1px solid var(--line); background: var(--panel); }
+    .result-column h2 { margin-bottom: 16px; font-size: 16px; }
+    #label-container { display: grid; gap: 9px; }
+    #label-container > div { padding: 12px; border-left: 3px solid var(--coral); background: #f7f4ec; font-size: 14px; }
+    #status { min-height: 22px; margin-top: 12px; color: #9b493a; font-size: 13px; }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; }
+    #start { min-height: 46px; padding: 0 20px; border: 0; border-radius: 4px; color: white; background: var(--green); font-weight: 700; cursor: pointer; }
+    #start:hover { background: #19493f; }
+    #start:disabled { opacity: .6; cursor: wait; }
+    #fallback { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; }
+    #fallback p { margin: 0; }
+    #photo { max-width: 100%; }
+    .product-panel { align-self: start; overflow: hidden; }
+    .product-photo {
+      display: grid;
+      min-height: 280px;
+      overflow: hidden;
+      background: #e7e2d5;
+    }
+    .product-photo img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: center 68%; }
+    .product-copy { padding: 24px; }
+    .product-copy h2 { margin-bottom: 8px; font-size: 22px; }
+    .product-copy p { color: var(--muted); line-height: 1.6; }
+    .purchase-notice { padding: 12px; border-left: 3px solid var(--yellow); color: var(--ink) !important; background: #fbf5df; font-size: 13px; }
+    .purchase-link { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; border-radius: 4px; color: white; background: var(--coral); font-weight: 700; text-decoration: none; }
+    .purchase-link:hover { background: #c85f49; }
+    @media (max-width: 820px) {
+      .layout { grid-template-columns: 1fr; padding-top: 24px; }
+      .product-panel { display: grid; grid-template-columns: minmax(180px, .8fr) 1fr; }
+      .product-photo { min-height: 100%; }
+    }
+    @media (max-width: 560px) {
+      .topbar { padding: 16px; }
+      .layout { gap: 14px; padding: 18px 14px 36px; }
+      .workspace { padding: 22px 16px; }
+      .scanner { grid-template-columns: 1fr; }
+      .result-column { border-top: 1px solid var(--line); border-left: 0; }
+      .product-panel { grid-template-columns: 1fr; }
+      .product-photo { min-height: 220px; }
+    }
+  </style>
   <script src="./vendor/tf.min.js"></script>
   <script src="./vendor/teachablemachine-image.min.js"></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
-  <div>Teachable Machine Image Model</div>
-  <button type="button" id="start">Start</button>
-  <div id="webcam-container"></div>
-  <div id="label-container"></div>
-  <div id="status" role="status"></div>
-  <div id="fallback" hidden>
-    <p>웹캠 대신 사진으로 테스트할 수 있습니다.</p>
-    <input type="file" id="photo" accept="image/*" aria-label="테스트 사진 선택">
-    <div><canvas id="photo-preview" width="224" height="224" hidden></canvas></div>
-  </div>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">V</span><span>FIGURE VISION</span></div>
+    <span class="local-tag">브라우저에서 실행되는 이미지 모델</span>
+  </header>
+  <main class="layout">
+    <section class="workspace" aria-labelledby="page-title">
+      <p class="eyebrow">AI OBJECT RECOGNITION</p>
+      <h1 id="page-title">카메라로 피규어를<br>인식해 보세요</h1>
+      <p class="intro">실시간 화면이나 사진을 모델에 입력하면 학습된 이미지 클래스와 예측 확률을 보여줍니다.</p>
+      <div class="scanner">
+        <div class="camera-column">
+          <span class="section-label">카메라 입력</span>
+          <div id="webcam-container" aria-label="웹캠 화면"></div>
+          <div id="fallback" hidden>
+            <p>사진으로 테스트</p>
+            <input type="file" id="photo" accept="image/*" aria-label="테스트 사진 선택">
+            <canvas id="photo-preview" width="224" height="224" hidden></canvas>
+          </div>
+          <div class="actions">
+            <button type="button" id="start">카메라 시작</button>
+          </div>
+          <div id="status" role="status" aria-live="polite"></div>
+        </div>
+        <section class="result-column" aria-labelledby="result-title">
+          <h2 id="result-title">인식 결과</h2>
+          <div id="label-container" aria-live="polite"></div>
+        </section>
+      </div>
+    </section>
+    <aside class="product-panel" aria-labelledby="product-title">
+      <div class="product-photo">
+        <img src="./PIC.jpg" alt="파란색 슈퍼걸 의상을 입은 피규어">
+      </div>
+      <div class="product-copy">
+        <p class="eyebrow">FEATURED FIGURE</p>
+        <h2 id="product-title">슈퍼걸 피규어</h2>
+        <p>이미지 분류 모델의 학습에 사용한 피규어입니다.</p>
+        <p class="purchase-notice">이 서비스를 이용하려면 슈퍼걸 피규어를 구매해야 합니다.</p>
+        <a class="purchase-link" href="https://smartstore.naver.com/sellercompany1/products/12916460085" target="_blank" rel="noopener noreferrer">피규어 구매하기</a>
+      </div>
+    </aside>
+  </main>
 </body>
 </html>

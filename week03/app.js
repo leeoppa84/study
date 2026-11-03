@@ -30,7 +30,7 @@ function stopCamera() {
   if (webcam) webcam.stop();
   webcam = undefined;
   document.getElementById('webcam-container').replaceChildren();
-  start.textContent = 'Start';
+  start.textContent = '카메라 시작';
 }
 
 async function loop() {
@@ -58,7 +58,7 @@ start.addEventListener('click', async () => {
     await webcam.play();
     document.getElementById('webcam-container').replaceChildren(webcam.canvas);
     running = true;
-    start.textContent = 'Stop';
+    start.textContent = '카메라 종료';
     status.textContent = '';
     frame = requestAnimationFrame(loop);
   } catch (error) {
