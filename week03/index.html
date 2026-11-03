@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teachable Machine Image Model</title>
+  <script src="./vendor/tf.min.js"></script>
+  <script src="./vendor/teachablemachine-image.min.js"></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div>Teachable Machine Image Model</div>
+  <button type="button" id="start">Start</button>
+  <div id="webcam-container"></div>
+  <div id="label-container"></div>
+  <div id="status" role="status"></div>
+  <div id="fallback" hidden>
+    <p>웹캠 대신 사진으로 테스트할 수 있습니다.</p>
+    <input type="file" id="photo" accept="image/*" aria-label="테스트 사진 선택">
+    <div><canvas id="photo-preview" width="224" height="224" hidden></canvas></div>
+  </div>
+</body>
+</html>
